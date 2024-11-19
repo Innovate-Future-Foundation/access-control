@@ -12,6 +12,13 @@ terraform {
 
 provider "aws" {
   region = var.location
+  default_tags {
+    tags = {
+      Project    = "inff"
+      ManagedBy  = "Terraform"
+      Principal  = var.create_by
+    }
+  }
 }
 
 # Use Identity Center Module
@@ -36,7 +43,7 @@ module "aws-iam-identity-center" {
 
   # Create desired USERS in IAM Identity Center
   sso_users = {
-    "yc.wang" : {
+    "ycwang0037" : {
       group_membership = ["DevOps"]              # Management Groups
       user_name        = "ycwang0037"            # Unique username, <given-name><surname><4-digit-number>
       given_name       = "Yuechen"               # Your given name
@@ -74,7 +81,7 @@ module "aws-iam-identity-center" {
       principal_name  = "Admin"                                   # name of the user or group you wish to have access to the account(s)
       principal_type  = "GROUP"                                   # principal type (user or group) you wish to have access to the account(s)
       principal_idp   = "INTERNAL"                                # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
-      permission_sets = ["AdministratorAccess", "ViewOnlyAccess"] # permissions the user/group will have in the account(s)
+      permission_sets = ["AdministratorAccess"] # permissions the user/group will have in the account(s)
       account_ids     = [var.prod_account]                        # account(s) the group will have access to. Permissions they will have in account are above line
     },
     DevOps : {
