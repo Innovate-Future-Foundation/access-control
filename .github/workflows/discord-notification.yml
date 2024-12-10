@@ -1,0 +1,119 @@
+name: Discord Notification
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+  push:
+    branches: [main, develop] # Add your target branches
+  issues:
+    types: [opened, closed, reopened]
+  workflow_run:
+    workflows: ["CI", "Tests"] # Add your other workflow names
+    types: [completed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: discord-notification-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Get latest commit message
+        id: commit
+        uses: actions/github-script@v6
+        # Only run for pull request events
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            try {
+              const { data: commits } = await github.rest.pulls.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number
+              });
+              const lastCommit = commits[commits.length - 1];
+              return lastCommit.commit.message;
+            } catch (error) {
+              return '';
+            }
+
+      - name: Discord PR Notification
+        if: github.event_name == 'pull_request' && !github.event.pull_request.draft
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            ${{ github.event.action == 'opened' && '🆕 **New Pull Request**' || '🔄 **Pull Request Updated**' }}
+
+            **Latest Commit:** ${{ steps.commit.outputs.result || 'N/A' }}
+
+            **Description:** 📝
+            ${{ github.event.pull_request.body }}
+
+            🔗 **Link:** ${{ github.event.pull_request.html_url }}
+
+      - name: Discord PR Merged Notification
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged && !github.event.pull_request.draft
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **Pull Request Merged! 🎉**
+
+            **Title:** ${{ github.event.pull_request.title }}
+            **Author:** ${{ github.event.pull_request.user.login }}
+            **Merged by:** ${{ github.event.pull_request.merged_by.login }}
+
+            🔗 **Link:** ${{ github.event.pull_request.html_url }}
+
+      - name: Discord Push Notification
+        if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip notification]')
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **New Push to ${{ github.ref_name }}** 📦
+
+            **Author:** ${{ github.event.sender.login }}
+            **Commits:** ${{ github.event.commits.length }}
+
+            🔗 **Compare:** ${{ github.event.compare }}
+
+      - name: Discord Issue Notification
+        if: github.event_name == 'issues'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **Issue ${{ github.event.action }}!** 🎯
+
+            **Title:** ${{ github.event.issue.title }}
+            **Author:** ${{ github.event.issue.user.login }}
+            **Status:** ${{ github.event.issue.state }}
+
+            📝 **Description:**
+            ${{ github.event.issue.body }}
+
+            🔗 **Link:** ${{ github.event.issue.html_url }}
+
+      - name: Discord Workflow Notification
+        if: github.event_name == 'workflow_run'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **Workflow Run Completed** ⚡
+
+            **Workflow:** ${{ github.event.workflow.name }}
+            **Branch:** ${{ github.ref_name }}
+            **Environment:** ${{ github.event.workflow_run.environment }}
+            **Status:** ${{ github.event.workflow_run.conclusion }} ${{ github.event.workflow_run.conclusion == 'success' && '✅' || '❌' }}
+            **Triggered by:** ${{ github.event.workflow_run.actor.login }}
+
+            🔗 **Link:** ${{ github.event.workflow_run.html_url }}
