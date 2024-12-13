@@ -16,7 +16,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  terraform_plan:
+  terraform_apply:
     runs-on: ubuntu-22.04
     steps:
       - id: checkout_latest
