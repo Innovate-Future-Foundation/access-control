@@ -25,7 +25,7 @@ jobs:
           path: common
 
       - id: tf_prep
-        name: Terraform setup using Access Key
+        name: Terraform setup using oidc role
         uses: ./common/actions/setup_with_oidc
         env:
           terraform_version: "1.1.7"
@@ -51,6 +51,8 @@ jobs:
         run: terraform plan -out .planfile
         env:
           TF_VAR_create_by: ${{ steps.get_identity.outputs.identity }}
+          TF_VAR_uat_account: ${{ secrets.ACCOUNT_UAT }}
+          TF_VAR_prod_account: ${{ secrets.ACCOUNT_PROD }}
 
       - id: post_comment
         name: Post Terraform Plan to PR
