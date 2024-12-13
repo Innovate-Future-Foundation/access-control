@@ -1,0 +1,77 @@
+name: Terraform Apply
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: The Pull Request number
+        required: true
+        type: number
+
+
+permissions:
+  id-token: write # This is required for requesting the JWT (OIDC)
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform_plan:
+    runs-on: ubuntu-22.04
+    steps:
+      - id: checkout_latest
+        name: Checkout latest
+        uses: actions/checkout@v4
+      - id: checkout_common_action
+        name: Checkout latest
+        uses: actions/checkout@v4
+        with:
+          repository: Innovate-Future-Foundation/terraform-bootstrap
+          path: common
+      - id: tf_prep
+        name: Terraform setup using Access Key
+        uses: ./common/actions/setup_with_oidc
+        env:
+          terraform_version: "1.1.7"
+          terraform_dir: "./"
+          aws_tfstate_key: "state/terraform-state"
+        with:
+          terraform_dir: ${{ env.terraform_dir }}
+          terraform_version: ${{ env.terraform_version }}
+          aws_region: ${{ secrets.TF_BACKEND_REGION }}
+          aws_role_arn: ${{ secrets.WF_ROLE_ARN }}
+          aws_tfstate_bucket: ${{ secrets.TF_BACKEND_BUCKET }}
+          aws_tfstate_key: ${{ env.aws_tfstate_key }}
+          aws_tflock_table: ${{ secrets.TF_BACKEND_TABLE }}
+
+      - id: get_pr_number
+        name: Get PR number
+        if: github.event_name == 'push'
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "Getting PR number based on head_commit"
+            PR_NUMBER=$(gh pr list --base main --state merged --search "${{ github.event.head_commit.message }}" --json number --jq '.[0].number')
+          else
+            echo "Getting PR number from dispatch input"
+            PR_NUMBER=${{ github.event.inputs.pr_number }}
+          fi
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No matching PR found"
+            exit 1
+          fi
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - id: dl_tf_plan
+        name: Download Plan from S3
+        run: |
+          aws s3 cp s3://${{ secrets.WF_ARTIFACT_BUCKET }}/plans/plan-pr_${{ steps.get_pr_number.outputs.PR_NUMBER }} tfplan
+          if [ $? -ne 0 ]; then
+            echo "Failed to retrieve planfile. It may have expired or been deleted."
+            exit 1
+          fi
+
+      - id: tf_apply
+        name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
