@@ -24,6 +24,7 @@ provider "aws" {
 # Use Identity Center Module
 module "aws-iam-identity-center" {
   source = "aws-ia/iam-identity-center/aws"
+  version = "1.0.1"
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
