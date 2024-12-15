@@ -46,7 +46,6 @@ jobs:
 
       - id: get_pr_number
         name: Get PR number
-        if: github.event_name == 'push'
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "Getting PR number based on head_commit"
