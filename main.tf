@@ -14,9 +14,9 @@ provider "aws" {
   region = var.location
   default_tags {
     tags = {
-      Project    = "inff"
-      ManagedBy  = "Terraform"
-      Principal  = var.create_by
+      Project   = "inff"
+      ManagedBy = "Terraform"
+      Principal = var.create_by
     }
   }
 }
@@ -24,12 +24,13 @@ provider "aws" {
 # Use Identity Center Module
 module "aws-iam-identity-center" {
   source = "aws-ia/iam-identity-center/aws"
+  version = "1.0.1"
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
-    Admin : {
-      group_name        = "Admin"
-      group_description = "Admin IAM Identity Center Group"
+    DevOpsLead : {
+      group_name        = "DevOpsLead"
+      group_description = "DevOpsLead IAM Identity Center Group"
     },
     DevOps : {
       group_name        = "DevOps"
@@ -44,7 +45,7 @@ module "aws-iam-identity-center" {
   # Create desired USERS in IAM Identity Center
   sso_users = {
     "ycwang0037" : {
-      group_membership = ["DevOps"]              # Management Groups
+      group_membership = ["DevOpsLead"]              # Management Groups
       user_name        = "ycwang0037"            # Unique username, <given-name><surname><4-digit-number>
       given_name       = "Yuechen"               # Your given name
       family_name      = "Wang"                  # Your family name
@@ -77,26 +78,26 @@ module "aws-iam-identity-center" {
 
   # Assign users/groups access to accounts with the specified permissions
   account_assignments = {
-    Admin : {
-      principal_name  = "Admin"                                   # name of the user or group you wish to have access to the account(s)
-      principal_type  = "GROUP"                                   # principal type (user or group) you wish to have access to the account(s)
-      principal_idp   = "INTERNAL"                                # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
-      permission_sets = ["AdministratorAccess"] # permissions the user/group will have in the account(s)
-      account_ids     = [var.prod_account]                        # account(s) the group will have access to. Permissions they will have in account are above line
+    DevOpsLead : {
+      principal_name  = "DevOpsLead"                # name of the user or group you wish to have access to the account(s)
+      principal_type  = "GROUP"                             # principal type (user or group) you wish to have access to the account(s)
+      principal_idp   = "INTERNAL"                          # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
+      permission_sets = ["PowerUserAccess"]                 # permissions the user/group will have in the account(s)
+      account_ids     = [var.prod_account, var.uat_account] # account(s) the group will have access to. Permissions they will have in account are above line
     },
     DevOps : {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["PowerUserAccess"]
-      account_ids     = [var.prod_account]
+      account_ids     = [var.uat_account]
     },
     Dev : {
       principal_name  = "Dev"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["ReadOnlyAccess"]
-      account_ids     = [var.prod_account]
+      account_ids     = [var.uat_account]
     },
   }
 

@@ -7,7 +7,7 @@ variable "prod_account" {
   type = string
 }
 
-variable "dev_account" {
+variable "uat_account" {
   type = string
 }
 
