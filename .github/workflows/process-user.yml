@@ -1,0 +1,37 @@
+name: Process User Request
+
+on:
+  pull_request:
+    paths:
+      - "users/requests/*.json"
+    types: [opened, synchronize]
+
+jobs:
+  process-request:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+
+      - name: Validate and Process Request
+        run: python .github/scripts/process_request.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add main.tf
+          git commit -m "feat(users): Add user from PR #${{ github.event.pull_request.number }}" || echo "No changes to commit"
+          git push

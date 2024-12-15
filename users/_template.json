@@ -1,0 +1,9 @@
+{
+  "your-username": {
+    "group_membership": ["Dev"],
+    "user_name": "your-username",
+    "given_name": "YourFirstName",
+    "family_name": "YourLastName",
+    "email": "your.email@domain.com"
+  }
+}
