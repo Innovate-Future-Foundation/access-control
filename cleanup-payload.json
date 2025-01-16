@@ -1,0 +1,12 @@
+{
+  "pull_request": {
+    "merged": true,
+    "base": {
+      "ref": "main",
+      "sha": "base-sha"
+    },
+    "head": {
+      "sha": "head-sha"
+    }
+  }
+}

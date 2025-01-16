@@ -39,3 +39,6 @@ terraform.rc
 # For local testing
 .env
 .secrets
+
+# Python virtual environment
+.venv/

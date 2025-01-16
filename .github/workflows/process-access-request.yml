@@ -1,0 +1,45 @@
+name: Process Access Request
+
+on:
+  pull_request:
+    paths:
+      - "users/requests/*.tfvars"
+    types: [opened, synchronize]
+
+jobs:
+  process-request:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }} ${{ github.sha }} | grep '^users/requests/.*\.tfvars$' || true)
+          echo "files=${CHANGED_FILES}" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        if: steps.changed-files.outputs.files != ''
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        if: steps.changed-files.outputs.files != ''
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-hcl2
+
+      - name: Merge user request
+        if: steps.changed-files.outputs.files != ''
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
+        run: python .github/scripts/merge_users.py

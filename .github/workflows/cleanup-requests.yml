@@ -1,0 +1,30 @@
+name: Cleanup Processed Requests
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: Remove processed request files
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Get list of processed files from the merged PR
+          FILES=$(git diff --name-only --diff-filter=A ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '^users/requests/.*\.tfvars$' || true)
+
+          # Remove each processed file
+          for file in $FILES; do
+            git rm "$file"
+          done
+
+          git commit -m "chore: cleanup processed access requests" || echo "No files to cleanup"
+          git push
