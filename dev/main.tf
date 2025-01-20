@@ -32,7 +32,7 @@ module "aws-iam-identity-center" {
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
-    DevOpsLead : {
+    PlatformAdmin : {
       group_name        = "PlatformAdmin"
       group_description = "PlatformAdmin IAM Identity Center Group"
     },
