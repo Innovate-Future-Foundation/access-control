@@ -40,21 +40,6 @@ jobs:
         with:
           repository: Innovate-Future-Foundation/terraform-bootstrap
           path: common
-      - id: tf_prep
-        name: Terraform setup using oidc role
-        uses: ./common/actions/setup_with_oidc
-        env:
-          terraform_version: "1.10.2"
-          terraform_dir: "./"
-          aws_tfstate_key: "state/terraform-state"
-        with:
-          terraform_dir: ${{ env.tf_dir }}
-          terraform_version: ${{ env.tf_version }}
-          aws_region: ${{ secrets.TF_BACKEND_REGION }}
-          aws_role_arn: "arn:aws:iam::${{ secrets.AWS_DEV_ORG_ACCOUNT }}:role/oidc-${{ vars.REPO_ORG_ABBR }}-${{ github.event.repository.name }}"
-          aws_tfstate_bucket: ${{ secrets.TF_BACKEND_STATE_BUCKET }}
-          aws_tfstate_key: ${{ env.aws_tfstate_key }}
-          aws_tflock_table: ${{ secrets.TF_BACKEND_LOCKID_TABLE }}
 
       - id: get_pr_number
         name: Get PR number
@@ -83,6 +68,22 @@ jobs:
             echo "Failed to retrieve planfile. It may have expired or been deleted."
             exit 1
           fi
+
+      - id: tf_prep
+        name: Terraform setup using oidc role
+        uses: ./common/actions/setup_with_oidc
+        env:
+          terraform_version: "1.10.2"
+          terraform_dir: "./"
+          aws_tfstate_key: "state/terraform-state"
+        with:
+          terraform_dir: ${{ env.tf_dir }}
+          terraform_version: ${{ env.tf_version }}
+          aws_region: ${{ secrets.TF_BACKEND_REGION }}
+          aws_role_arn: "arn:aws:iam::${{ secrets.AWS_DEV_ORG_ACCOUNT }}:role/oidc-${{ vars.REPO_ORG_ABBR }}-${{ github.event.repository.name }}"
+          aws_tfstate_bucket: ${{ secrets.TF_BACKEND_STATE_BUCKET }}
+          aws_tfstate_key: ${{ env.aws_tfstate_key }}
+          aws_tflock_table: ${{ secrets.TF_BACKEND_LOCKID_TABLE }}
 
       - id: tf_apply_tfplan
         if: steps.get_pr_number.outputs.PR_NUMBER != 0
