@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Dev - Terraform Apply
 on:
   push:
     branches:
@@ -59,16 +59,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: dl_tf_plan
-        if: steps.get_pr_number.outputs.PR_NUMBER != 0
-        name: Download Plan from S3
-        run: |
-          aws s3 cp s3://${{ secrets.WORKFLOW_TEMP_BUCKET }}/plans/plan-${{ steps.get_pr_number.outputs.PR_NUMBER }}_${{ env.tf_dir }} tfplan
-          if [ $? -ne 0 ]; then
-            echo "Failed to retrieve planfile. It may have expired or been deleted."
-            exit 1
-          fi
-
       - id: tf_prep
         name: Terraform setup using oidc role
         uses: ./common/actions/setup_with_oidc
@@ -84,6 +74,16 @@ jobs:
           aws_tfstate_bucket: ${{ secrets.TF_BACKEND_STATE_BUCKET }}
           aws_tfstate_key: ${{ env.aws_tfstate_key }}
           aws_tflock_table: ${{ secrets.TF_BACKEND_LOCKID_TABLE }}
+
+      - id: dl_tf_plan
+        if: steps.get_pr_number.outputs.PR_NUMBER != 0
+        name: Download Plan from S3
+        run: |
+          aws s3 cp s3://${{ secrets.WORKFLOW_TEMP_BUCKET }}/plans/plan-${{ steps.get_pr_number.outputs.PR_NUMBER }}_${{ env.tf_dir }} tfplan
+          if [ $? -ne 0 ]; then
+            echo "Failed to retrieve planfile. It may have expired or been deleted."
+            exit 1
+          fi
 
       - id: tf_apply_tfplan
         if: steps.get_pr_number.outputs.PR_NUMBER != 0
