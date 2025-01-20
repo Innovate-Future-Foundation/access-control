@@ -41,7 +41,7 @@ jobs:
           repository: Innovate-Future-Foundation/terraform-bootstrap
           path: common
       - id: tf_prep
-        name: Terraform setup using Access Key
+        name: Terraform setup using oidc role
         uses: ./common/actions/setup_with_oidc
         env:
           terraform_version: "1.10.2"

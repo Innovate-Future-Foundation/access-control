@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "dev/**"
+      - ".github/workflows/dev-tf-plan.yml"
 
 permissions:
   id-token: write # This is required for requesting the JWT (OIDC)
@@ -70,5 +71,5 @@ jobs:
 
       - name: Upload Plan to S3
         run: |
-          aws s3 cp .planfile s3://${{ secrets.WORKFLOW_TEMP_BUCKET }}/plans/plan-pr_${{ github.event.pull_request.number }}_${{ env.tf_dir }}
+          aws s3 cp .planfile s3://${{ secrets.WORKFLOW_TEMP_BUCKET }}/plans/plan-${{ github.event.pull_request.number }}_${{ env.tf_dir }}
           echo "Plan uploaded to S3"
