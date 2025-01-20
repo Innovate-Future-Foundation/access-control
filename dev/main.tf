@@ -48,7 +48,7 @@ module "aws-iam-identity-center" {
 
   # Create desired USERS in IAM Identity Center
   sso_users = {
-    "ycwang0037" : {
+    ycwang0037 : {
       group_membership = ["PlatformAdmin"]       # Management Groups
       user_name        = "ycwang0037"            # Unique username, <given-name><surname><4-digit-number>
       given_name       = "Yuechen"               # Your given name
@@ -60,47 +60,49 @@ module "aws-iam-identity-center" {
 
   # Create permissions sets backed by AWS managed policies
   permission_sets = {
-    AdministratorAccess = {
+    Billing = {
+      description          = "Provides AWS full access permissions.",
+      session_duration     = "PT4H", // how long until session expires - this means 1 hours. max is 12 hours
+      aws_managed_policies = ["arn:aws:iam::aws:policy/job-function/Billing"]
+    },
+    Administrator = {
       description          = "Provides AWS full access permissions.",
       session_duration     = "PT1H", // how long until session expires - this means 1 hours. max is 12 hours
-      aws_managed_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-      tags                 = { ManagedBy = "Terraform" }
+      aws_managed_policies = ["arn:aws:iam::aws:policy/AdministratorAccess", "arn:aws:iam::aws:policy/job-function/Billing"]
     },
-    PowerUserAccess = {
+    PowerUser = {
       description          = "Provides AWS full access permissions, but does not allow management of Users and groups.",
       session_duration     = "PT2H", // how long until session expires - this means 2 hours. max is 12 hours
       aws_managed_policies = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      tags                 = { ManagedBy = "Terraform" }
     },
-    ReadOnlyAccess = {
+    ReadOnly = {
       description          = "Provides AWS read only permissions.",
       session_duration     = "PT4H", // how long until session expires - this means 4 hours. max is 12 hours
       aws_managed_policies = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
-      tags                 = { ManagedBy = "Terraform" }
     },
   }
 
   # Assign users/groups access to accounts with the specified permissions
   account_assignments = {
     PlatformAdmin : {
-      principal_name  = "PlatformAdmin"         # name of the user or group you wish to have access to the account(s)
-      principal_type  = "GROUP"                 # principal type (user or group) you wish to have access to the account(s)
-      principal_idp   = "INTERNAL"              # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
-      permission_sets = ["AdministratorAccess"] # permissions the user/group will have in the account(s)
-      account_ids     = [var.dev_account]       # account(s) the group will have access to. Permissions they will have in account are above line
+      principal_name  = "PlatformAdmin"              # name of the user or group you wish to have access to the account(s)
+      principal_type  = "GROUP"                      # principal type (user or group) you wish to have access to the account(s)
+      principal_idp   = "INTERNAL"                   # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
+      permission_sets = ["Administrator", "Billing"] # permissions the user/group will have in the account(s)
+      account_ids     = [var.dev_account]            # account(s) the group will have access to. Permissions they will have in account are above line
     },
     DevOps : {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
-      permission_sets = ["PowerUserAccess"]
+      permission_sets = ["PowerUser"]
       account_ids     = [var.dev_account]
     },
     Dev : {
       principal_name  = "Developer"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
-      permission_sets = ["ReadOnlyAccess"]
+      permission_sets = ["ReadOnly"]
       account_ids     = [var.dev_account]
     },
   }
