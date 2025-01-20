@@ -1,10 +1,10 @@
-name: Terraform Plan
+name: Dev - Terraform Plan
 on:
   pull_request:
+    branches:
+      - main
     paths:
-      - '**.tf'
-      - '**.tfvars'
-      - '.github/workflows/terraform-plan.yml'
+      - "dev/**"
 
 permissions:
   id-token: write # This is required for requesting the JWT (OIDC)
@@ -12,9 +12,18 @@ permissions:
   pull-requests: write
 
 jobs:
-  terraform_plan:
+  dev_terraform_plan:
+    environment:
+      name: Development
+    env:
+      tf_version: "1.10.2"
+      tf_dir: "dev"
+
     runs-on: ubuntu-22.04
-    # Specify trigger condition
+    defaults:
+      run:
+        working-directory: ${{ env.tf_dir }}
+
     if: github.event.pull_request.state != 'approved'
     steps:
       - id: checkout_latest
@@ -32,31 +41,24 @@ jobs:
         name: Terraform setup using oidc role
         uses: ./common/actions/setup_with_oidc
         env:
-          terraform_version: "1.10.2"
-          terraform_dir: "./"
           aws_tfstate_key: "state/terraform-state"
         with:
-          terraform_dir: ${{ env.terraform_dir }}
-          terraform_version: ${{ env.terraform_version }}
+          terraform_dir: ${{ env.tf_dir }}
+          terraform_version: ${{ env.tf_version }}
           aws_region: ${{ secrets.TF_BACKEND_REGION }}
-          aws_role_arn: ${{ secrets.WF_ROLE_ARN }}
-          aws_tfstate_bucket: ${{ secrets.TF_BACKEND_BUCKET }}
+          aws_role_arn: "arn:aws:iam::${{ secrets.AWS_DEV_ORG_ACCOUNT }}:role/oidc-${{ vars.REPO_ORG_ABBR }}-${{ github.event.repository.name }}"
+          aws_tfstate_bucket: ${{ secrets.TF_BACKEND_STATE_BUCKET }}
           aws_tfstate_key: ${{ env.aws_tfstate_key }}
-          aws_tflock_table: ${{ secrets.TF_BACKEND_TABLE }}
-      
-      - id: get_identity
-        name: Get and check current identity
-        run: |
-          arn=$(aws sts get-caller-identity --query 'Arn' --output text)
-          echo "identity=$(echo $arn | cut -d ':' -f 6)" >> $GITHUB_OUTPUT
+          aws_tflock_table: ${{ secrets.TF_BACKEND_LOCKID_TABLE }}
 
       - id: tf_plan
         name: Terraform Plan
         run: terraform plan -out .planfile
         env:
-          TF_VAR_create_by: ${{ steps.get_identity.outputs.identity }}
-          TF_VAR_uat_account: ${{ secrets.ACCOUNT_UAT }}
-          TF_VAR_prod_account: ${{ secrets.ACCOUNT_PROD }}
+          TF_VAR_location: ${{ secrets.AWS_REGION }}
+          TF_VAR_dev_account: ${{ secrets.AWS_DEV_ACCOUNT }}
+          TF_VAR_staging_account: ${{ secrets.AWS_STAGING_ACCOUNT }}
+          TF_VAR_prod_account: ${{ secrets.AWS_PROD_ACCOUNT }}
 
       - id: post_comment
         name: Post Terraform Plan to PR
@@ -64,8 +66,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           planfile: .planfile
-      
+
       - name: Upload Plan to S3
         run: |
-          aws s3 cp .planfile s3://${{ secrets.WF_ARTIFACT_BUCKET }}/plans/plan-pr_${{ github.event.pull_request.number }}
+          aws s3 cp .planfile s3://${{ secrets.WORKFLOW_TEMP_BUCKET }}/plans/plan-pr_${{ github.event.pull_request.number }}_${{ env.tf_dir }}
           echo "Plan uploaded to S3"
