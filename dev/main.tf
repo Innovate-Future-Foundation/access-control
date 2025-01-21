@@ -49,11 +49,25 @@ module "aws-iam-identity-center" {
   # Create desired USERS in IAM Identity Center
   sso_users = {
     ycwang0037 : {
-      group_membership = ["PlatformAdmin"]       # Management Groups
-      user_name        = "ycwang0037"            # Unique username, <given-name><surname><4-digit-number>
-      given_name       = "Yuechen"               # Your given name
-      family_name      = "Wang"                  # Your family name
-      email            = "ycyc-doit@outlook.com" # Your working email
+      group_membership = ["PlatformAdmin"]   # Management Groups
+      user_name        = "ycwang0037"        # Unique username, <given-name><surname><4-digit-number>
+      given_name       = "Yuechen"           # Your given name
+      family_name      = "Wang"              # Your family name
+      email            = "swyc168@gmail.com" # Your working email
+    },
+    fanwang0207 : {
+      group_membership = ["DevOps"]           # Management Groups
+      user_name        = "fanwang0207"        # Unique username, <given-name><surname><4-digit-number>
+      given_name       = "Fan"                # Your given name
+      family_name      = "Wang"               # Your family name
+      email            = "fanwangcareer@gmail.com" # Your working email
+    }, 
+    henrychien1010 : {
+      group_membership = ["DevOps"]
+      user_name        = "henrychien1010"
+      given_name       = "YuCheng"
+      family_name      = "Chien"
+      email            = "henrychienau@gmail.com"
     },
     # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
     maxh85 : {
