@@ -56,6 +56,13 @@ module "aws-iam-identity-center" {
       email            = "ycyc-doit@outlook.com" # Your working email
     },
     # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
+    maxh85 : {
+      group_membership = ["PlatformAdmin"]
+      user_name        = "maxh85"
+      given_name       = "Mark"
+      family_name      = "Ma"
+      email            = "xianghui.mark.ma@gmail.com"
+    }
   }
 
   # Create permissions sets backed by AWS managed policies
