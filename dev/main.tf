@@ -69,14 +69,21 @@ module "aws-iam-identity-center" {
       family_name      = "Chien"
       email            = "henrychienau@gmail.com"
     },
-    # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
+    qianyang5059 : {
+      group_membership = ["Developer"]       # Management Groups
+      user_name        = "qianyang5059"      # Unique username, <given-name><surname><4-digit-number>
+      given_name       = "Qingyan"           # Your given name
+      family_name      = "Yang"              # Your family name
+      email            = "chelsea.yang.work@gmail.com" # Your working email
+    },
     maxh0085 : {
       group_membership = ["DevOps"]
       user_name        = "maxh0085"
       given_name       = "Mark"
       family_name      = "Ma"
       email            = "mark.xianghui.ma@gmail.com"
-    }
+    },
+    # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
   }
 
   # Create permissions sets backed by AWS managed policies
