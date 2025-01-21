@@ -57,7 +57,7 @@ module "aws-iam-identity-center" {
     },
     # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
     maxh85 : {
-      group_membership = ["PlatformAdmin"]
+      group_membership = ["DevOps"]
       user_name        = "maxh85"
       given_name       = "Mark"
       family_name      = "Ma"
