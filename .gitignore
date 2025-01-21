@@ -39,3 +39,4 @@ terraform.rc
 # For local testing
 .env
 .secrets
+.venv
