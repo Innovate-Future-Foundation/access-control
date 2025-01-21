@@ -55,6 +55,13 @@ module "aws-iam-identity-center" {
       family_name      = "Wang"              # Your family name
       email            = "swyc168@gmail.com" # Your working email
     },
+    henrychien1010 : {
+      group_membership = ["DevOps"]
+      user_name        = "henrychien1010"
+      given_name       = "YuCheng"
+      family_name      = "Chien"
+      email            = "henrychienau@gmail.com"
+    },
     # Add your account details above, assign proper membership and create PR. DO NOT delete this comment
   }
 
