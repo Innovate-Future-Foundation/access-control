@@ -56,12 +56,12 @@ module "aws-iam-identity-center" {
       email            = "swyc168@gmail.com" # Your working email
     },
     fanwang0207 : {
-      group_membership = ["DevOps"]           # Management Groups
-      user_name        = "fanwang0207"        # Unique username, <given-name><surname><4-digit-number>
-      given_name       = "Fan"                # Your given name
-      family_name      = "Wang"               # Your family name
-      email            = "fanwangcareer@gmail.com" # Your working email
-    }, 
+      group_membership = ["DevOps"]
+      user_name        = "fanwang0207"
+      given_name       = "Fan"
+      family_name      = "Wang"
+      email            = "fanwangcareer@gmail.com"
+    },
     henrychien1010 : {
       group_membership = ["DevOps"]
       user_name        = "henrychien1010"
@@ -70,11 +70,11 @@ module "aws-iam-identity-center" {
       email            = "henrychienau@gmail.com"
     },
     qianyang5059 : {
-      group_membership = ["Developer"]       # Management Groups
-      user_name        = "qianyang5059"      # Unique username, <given-name><surname><4-digit-number>
-      given_name       = "Qingyan"           # Your given name
-      family_name      = "Yang"              # Your family name
-      email            = "chelsea.yang.work@gmail.com" # Your working email
+      group_membership = ["Developer"]
+      user_name        = "qianyang5059"
+      given_name       = "Qingyan"
+      family_name      = "Yang"
+      email            = "chelsea.yang.work@gmail.com"
     },
     maxh0085 : {
       group_membership = ["DevOps"]
@@ -82,6 +82,13 @@ module "aws-iam-identity-center" {
       given_name       = "Mark"
       family_name      = "Ma"
       email            = "mark.xianghui.ma@gmail.com"
+    },
+    dylan8686 : {
+      group_membership = ["DevOps"]
+      user_name        = "dylan8686"
+      given_name       = "Dylan"
+      family_name      = "Song"
+      email            = "dylan.song.au@gmail.com"
     },
     jasonw0030 : {
       group_membership = ["DevOps"]
