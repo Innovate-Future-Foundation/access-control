@@ -137,7 +137,7 @@ module "aws-iam-identity-center" {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
-      permission_sets = ["PowerUser"]
+      permission_sets = ["Administrator", "PowerUser"]
       account_ids     = [var.dev_account]
     },
     Dev : {
