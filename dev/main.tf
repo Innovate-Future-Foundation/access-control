@@ -76,6 +76,13 @@ module "aws-iam-identity-center" {
       family_name      = "Yang"
       email            = "chelsea.yang.work@gmail.com"
     },
+    fanzhang8888 : {
+      group_membership = ["Developer"]
+      user_name        = "fanzhang8888"
+      given_name       = "Fan"
+      family_name      = "Zhang"
+      email            = "zhangfanfansz@gmail.com"
+    },
     maxh0085 : {
       group_membership = ["DevOps"]
       user_name        = "maxh0085"
