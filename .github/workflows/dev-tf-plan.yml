@@ -45,7 +45,7 @@ jobs:
         run: terraform plan -out .planfile
         env:
           TF_VAR_location: ${{ secrets.AWS_REGION }}
-          TF_VAR_dev_account: ${{ secrets.AWS_DEV_ACCOUNT }}
+          TF_VAR_dev_account_id: ${{ secrets.AWS_DEV_ACCOUNT }}
 
       - id: publish_tf_plan
         name: Publish Plan to PR and S3
