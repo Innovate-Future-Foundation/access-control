@@ -1,30 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.1"
-    }
-  }
-
-  # Backend Skeleton
-  backend "s3" {}
-}
-
-provider "aws" {
-  region = var.location
-  default_tags {
-    tags = local.general_tags
-  }
-}
-
-locals {
-  general_tags = {
-    ManagedBy = "Terraform"
-    Usage     = "SSO"
-    Env       = "Development"
-  }
-}
-
 # Use Identity Center Module
 module "aws-iam-identity-center" {
   source  = "aws-ia/iam-identity-center/aws"
@@ -32,15 +5,15 @@ module "aws-iam-identity-center" {
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       group_name        = "PlatformAdmin"
       group_description = "PlatformAdmin IAM Identity Center Group"
     },
-    DevOps : {
+    DevOps = {
       group_name        = "DevOps"
       group_description = "DevOps IAM Identity Center Group"
     },
-    Developer : {
+    Developer = {
       group_name        = "Developer"
       group_description = "Dev IAM Identity Center Group"
     },
@@ -133,21 +106,21 @@ module "aws-iam-identity-center" {
 
   # Assign users/groups access to accounts with the specified permissions
   account_assignments = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       principal_name  = "PlatformAdmin"              # name of the user or group you wish to have access to the account(s)
       principal_type  = "GROUP"                      # principal type (user or group) you wish to have access to the account(s)
       principal_idp   = "INTERNAL"                   # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
       permission_sets = ["Administrator", "Billing"] # permissions the user/group will have in the account(s)
       account_ids     = [var.dev_account]            # account(s) the group will have access to. Permissions they will have in account are above line
     },
-    DevOps : {
+    DevOps = {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["Administrator", "PowerUser"]
       account_ids     = [var.dev_account]
     },
-    Dev : {
+    Dev = {
       principal_name  = "Developer"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
@@ -155,5 +128,4 @@ module "aws-iam-identity-center" {
       account_ids     = [var.dev_account]
     },
   }
-
 }
