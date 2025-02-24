@@ -111,21 +111,21 @@ module "aws-iam-identity-center" {
       principal_type  = "GROUP"                      # principal type (user or group) you wish to have access to the account(s)
       principal_idp   = "INTERNAL"                   # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
       permission_sets = ["Administrator", "Billing"] # permissions the user/group will have in the account(s)
-      account_ids     = [var.dev_account]            # account(s) the group will have access to. Permissions they will have in account are above line
+      account_ids     = [var.dev_account_id]         # account(s) the group will have access to. Permissions they will have in account are above line
     },
     DevOps = {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["Administrator", "PowerUser"]
-      account_ids     = [var.dev_account]
+      account_ids     = [var.dev_account_id]
     },
     Dev = {
       principal_name  = "Developer"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["ReadOnly"]
-      account_ids     = [var.dev_account]
+      account_ids     = [var.dev_account_id]
     },
   }
 }
