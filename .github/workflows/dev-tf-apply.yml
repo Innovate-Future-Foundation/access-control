@@ -57,6 +57,7 @@ jobs:
         if: steps.extract_pr_info.outputs.PR_NUMBER != 0
         uses: Innovate-Future-Foundation/common-action/apply-tfplan-s3@main
         with:
+          tf_dir: ${{ env.tf_dir }}
           s3_bucket: ${{ secrets.WORKFLOW_TEMP_BUCKET }}
           obj_key: "plans/plan-${{ steps.extract_pr_info.outputs.PR_NUMBER }}_${{ env.tf_dir }}"
 
