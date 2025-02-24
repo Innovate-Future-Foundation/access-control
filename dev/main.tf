@@ -48,56 +48,56 @@ module "aws-iam-identity-center" {
 
   # Create desired USERS in IAM Identity Center
   sso_users = {
-    ycwang0037 : {
+    ycwang0037 = {
       group_membership = ["PlatformAdmin"]   # Management Groups
       user_name        = "ycwang0037"        # Unique username, <given-name><surname><4-digit-number>
       given_name       = "Yuechen"           # Your given name
       family_name      = "Wang"              # Your family name
       email            = "swyc168@gmail.com" # Your working email
     },
-    fanwang0207 : {
+    fanwang0207 = {
       group_membership = ["DevOps"]
       user_name        = "fanwang0207"
       given_name       = "Fan"
       family_name      = "Wang"
       email            = "fanwangcareer@gmail.com"
     },
-    henrychien1010 : {
+    henrychien1010 = {
       group_membership = ["DevOps"]
       user_name        = "henrychien1010"
       given_name       = "YuCheng"
       family_name      = "Chien"
       email            = "henrychienau@gmail.com"
     },
-    qianyang5059 : {
+    qianyang5059 = {
       group_membership = ["Developer"]
       user_name        = "qianyang5059"
       given_name       = "Qingyan"
       family_name      = "Yang"
       email            = "chelsea.yang.work@gmail.com"
     },
-    fanzhang8888 : {
+    fanzhang8888 = {
       group_membership = ["Developer"]
       user_name        = "fanzhang8888"
       given_name       = "Fan"
       family_name      = "Zhang"
       email            = "zhangfanfansz@gmail.com"
     },
-    maxh0085 : {
+    maxh0085 = {
       group_membership = ["DevOps"]
       user_name        = "maxh0085"
       given_name       = "Mark"
       family_name      = "Ma"
       email            = "mark.xianghui.ma@gmail.com"
     },
-    dylan8686 : {
+    dylan8686 = {
       group_membership = ["DevOps"]
       user_name        = "dylan8686"
       given_name       = "Dylan"
       family_name      = "Song"
       email            = "dylan.song.au@gmail.com"
     },
-    jasonw0030 : {
+    jasonw0030 = {
       group_membership = ["DevOps"]
       user_name        = "jasonw0030"
       given_name       = "Jason"
