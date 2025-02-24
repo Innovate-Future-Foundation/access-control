@@ -1,30 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.1"
-    }
-  }
-
-  # Backend Skeleton
-  backend "s3" {}
-}
-
-provider "aws" {
-  region = var.location
-  default_tags {
-    tags = local.general_tags
-  }
-}
-
-locals {
-  general_tags = {
-    ManagedBy = "Terraform"
-    Usage     = "SSO"
-    Env       = "Development"
-  }
-}
-
 # Use Identity Center Module
 module "aws-iam-identity-center" {
   source  = "aws-ia/iam-identity-center/aws"
@@ -32,15 +5,15 @@ module "aws-iam-identity-center" {
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       group_name        = "PlatformAdmin"
       group_description = "PlatformAdmin IAM Identity Center Group"
     },
-    DevOps : {
+    DevOps = {
       group_name        = "DevOps"
       group_description = "DevOps IAM Identity Center Group"
     },
-    Developer : {
+    Developer = {
       group_name        = "Developer"
       group_description = "Dev IAM Identity Center Group"
     },
@@ -48,56 +21,56 @@ module "aws-iam-identity-center" {
 
   # Create desired USERS in IAM Identity Center
   sso_users = {
-    ycwang0037 : {
+    ycwang0037 = {
       group_membership = ["PlatformAdmin"]   # Management Groups
       user_name        = "ycwang0037"        # Unique username, <given-name><surname><4-digit-number>
       given_name       = "Yuechen"           # Your given name
       family_name      = "Wang"              # Your family name
       email            = "swyc168@gmail.com" # Your working email
     },
-    fanwang0207 : {
+    fanwang0207 = {
       group_membership = ["DevOps"]
       user_name        = "fanwang0207"
       given_name       = "Fan"
       family_name      = "Wang"
       email            = "fanwangcareer@gmail.com"
     },
-    henrychien1010 : {
+    henrychien1010 = {
       group_membership = ["DevOps"]
       user_name        = "henrychien1010"
       given_name       = "YuCheng"
       family_name      = "Chien"
       email            = "henrychienau@gmail.com"
     },
-    qianyang5059 : {
+    qianyang5059 = {
       group_membership = ["Developer"]
       user_name        = "qianyang5059"
       given_name       = "Qingyan"
       family_name      = "Yang"
       email            = "chelsea.yang.work@gmail.com"
     },
-    fanzhang8888 : {
+    fanzhang8888 = {
       group_membership = ["Developer"]
       user_name        = "fanzhang8888"
       given_name       = "Fan"
       family_name      = "Zhang"
       email            = "zhangfanfansz@gmail.com"
     },
-    maxh0085 : {
+    maxh0085 = {
       group_membership = ["DevOps"]
       user_name        = "maxh0085"
       given_name       = "Mark"
       family_name      = "Ma"
       email            = "mark.xianghui.ma@gmail.com"
     },
-    dylan8686 : {
+    dylan8686 = {
       group_membership = ["DevOps"]
       user_name        = "dylan8686"
       given_name       = "Dylan"
       family_name      = "Song"
       email            = "dylan.song.au@gmail.com"
     },
-    jasonw0030 : {
+    jasonw0030 = {
       group_membership = ["DevOps"]
       user_name        = "jasonw0030"
       given_name       = "Jason"
@@ -133,27 +106,26 @@ module "aws-iam-identity-center" {
 
   # Assign users/groups access to accounts with the specified permissions
   account_assignments = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       principal_name  = "PlatformAdmin"              # name of the user or group you wish to have access to the account(s)
       principal_type  = "GROUP"                      # principal type (user or group) you wish to have access to the account(s)
       principal_idp   = "INTERNAL"                   # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
       permission_sets = ["Administrator", "Billing"] # permissions the user/group will have in the account(s)
-      account_ids     = [var.dev_account]            # account(s) the group will have access to. Permissions they will have in account are above line
+      account_ids     = [var.dev_account_id]         # account(s) the group will have access to. Permissions they will have in account are above line
     },
-    DevOps : {
+    DevOps = {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["Administrator", "PowerUser"]
-      account_ids     = [var.dev_account]
+      account_ids     = [var.dev_account_id]
     },
-    Dev : {
+    Dev = {
       principal_name  = "Developer"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["ReadOnly"]
-      account_ids     = [var.dev_account]
+      account_ids     = [var.dev_account_id]
     },
   }
-
 }

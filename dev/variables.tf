@@ -3,14 +3,6 @@ variable "location" {
   default = "us-east-1"
 }
 
-variable "dev_account" {
-  type = string
-}
-
-variable "prod_account" {
-  type = string
-}
-
-variable "staging_account" {
+variable "dev_account_id" {
   type = string
 }
