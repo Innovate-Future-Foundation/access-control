@@ -43,7 +43,7 @@ jobs:
 
       - id: tf_prep
         name: Terraform setup using oidc role
-        uses: ./common-action/setup-tf-aws
+        uses: Innovate-Future-Foundation/common-action/setup-tf-aws@main
         with:
           terraform_dir: ${{ env.tf_dir }}
           terraform_version: ${{ vars.TF_VERSION }}
