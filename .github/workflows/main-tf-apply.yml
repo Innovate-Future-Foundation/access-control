@@ -1,4 +1,4 @@
-name: Dev - Terraform Apply
+name: Main - Terraform Apply
 on:
   push:
     branches:
