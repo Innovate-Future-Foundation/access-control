@@ -3,9 +3,10 @@
 Organisation SSO management
 
 ## SSO Access Portal
-
-`https://d-9767b02062.awsapps.com/start`
-
+### Dev Organisation
+[Portal link](https://d-9767b02062.awsapps.com/start)
+### Main Organistation
+[Portal link](https://inffo.awsapps.com/start)
 ## User Groups
 
 - Developer
