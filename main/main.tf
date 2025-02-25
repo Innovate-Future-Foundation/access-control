@@ -5,15 +5,15 @@ module "aws-iam-identity-center" {
 
   # Create desired GROUPS in IAM Identity Center
   sso_groups = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       group_name        = "PlatformAdmin"
       group_description = "DevOpsLead IAM Identity Center Group"
     },
-    DevOps : {
+    DevOps = {
       group_name        = "DevOps"
       group_description = "DevOps IAM Identity Center Group"
     },
-    Dev : {
+    Developer = {
       group_name        = "Developer"
       group_description = "Dev IAM Identity Center Group"
     },
@@ -109,21 +109,21 @@ module "aws-iam-identity-center" {
 
   # Assign users/groups access to accounts with the specified permissions
   account_assignments = {
-    PlatformAdmin : {
+    PlatformAdmin = {
       principal_name  = "PlatformAdmin"                           # name of the user or group you wish to have access to the account(s)
       principal_type  = "GROUP"                                   # principal type (user or group) you wish to have access to the account(s)
       principal_idp   = "INTERNAL"                                # type of Identity Provider you are using. Valid values are "INTERNAL" (using Identity Store) or "EXTERNAL" (using external IdP such as EntraID, Okta, Google, etc.)
       permission_sets = ["Administrator"]                         # permissions the user/group will have in the account(s)
       account_ids     = [var.prod_account_id, var.uat_account_id] # account(s) the group will have access to. Permissions they will have in account are above line
     },
-    DevOps : {
+    DevOps = {
       principal_name  = "DevOps"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["PowerUser"]
       account_ids     = [var.uat_account_id]
     },
-    Dev : {
+    Developer = {
       principal_name  = "Developer"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
