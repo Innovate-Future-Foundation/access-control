@@ -33,7 +33,7 @@ jobs:
         name: Terraform setup using oidc role
         uses: Innovate-Future-Foundation/common-action/setup-tf-aws@main
         with:
-          terraform_dir: ${{ env.TF_DIR }}
+          terraform_dir: ${{ env.tf_dir }}
           terraform_version: ${{ vars.TF_VERSION }}
           backend_region: ${{ secrets.TF_BACKEND_REGION }}
           backend_role_arn: "arn:aws:iam::${{ secrets.AWS_PROD_ORG_ACCOUNT }}:role/oidc-${{ vars.REPO_ORG_ABBR }}-${{ github.event.repository.name }}"
