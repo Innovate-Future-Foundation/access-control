@@ -40,7 +40,7 @@ module "aws-iam-identity-center" {
       email            = "fanwangcareer@gmail.com"
     },
     henrychien1010 = {
-      group_membership = ["DevOps"]
+      group_membership = ["DevOpsLead"]
       user_name        = "henrychien1010"
       given_name       = "YuCheng"
       family_name      = "Chien"
