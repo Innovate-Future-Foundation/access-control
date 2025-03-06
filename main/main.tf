@@ -120,12 +120,19 @@ module "aws-iam-identity-center" {
       permission_sets = ["Administrator"]                         # permissions the user/group will have in the account(s)
       account_ids     = [var.prod_account_id, var.uat_account_id] # account(s) the group will have access to. Permissions they will have in account are above line
     },
-    DevOpsLead = {
+    DevOpsLead_uat = {
       principal_name  = "DevOpsLead"
       principal_type  = "GROUP"
       principal_idp   = "INTERNAL"
       permission_sets = ["Administrator"]
       account_ids     = [var.uat_account_id]
+    },
+    DevOpsLead_prod = {
+      principal_name  = "DevOpsLead"
+      principal_type  = "GROUP"
+      principal_idp   = "INTERNAL"
+      permission_sets = ["PowerUser"]
+      account_ids     = [var.prod_account_id]
     },
     DevOps = {
       principal_name  = "DevOps"
